@@ -24,6 +24,20 @@ const month_names = {
         'November',
         'December'
     ],
+    es: [
+        'Enero',
+        'Febrero',
+        'Marzo',
+        'Abril',
+        'Mayo',
+        'Junio',
+        'Julio',
+        'Agosto',
+        'Septiembre',
+        'Octubre',
+        'Noviembre',
+        'Diciembre'
+    ],
     ru: [
         'Январь',
         'Февраль',
@@ -37,6 +51,34 @@ const month_names = {
         'Октябрь',
         'Ноябрь',
         'Декабрь'
+    ],
+    ptBr: [
+        'Janeiro',
+        'Fevereiro',
+        'Março',
+        'Abril',
+        'Maio',
+        'Junho',
+        'Julho',
+        'Agosto',
+        'Setembro',
+        'Outubro',
+        'Novembro',
+        'Dezembro'
+    ],
+    fr: [
+        'Janvier',
+        'Février',
+        'Mars',
+        'Avril',
+        'Mai',
+        'Juin',
+        'Juillet',
+        'Août',
+        'Septembre',
+        'Octobre',
+        'Novembre',
+        'Décembre'
     ]
 };
 
@@ -585,10 +627,11 @@ class Bar {
     show_popup() {
         if (this.gantt.bar_being_dragged) return;
 
-        const start_date = date_utils.format(this.task._start, 'MMM D');
+        const start_date = date_utils.format(this.task._start, 'MMM D', this.gantt.options.language);
         const end_date = date_utils.format(
             date_utils.add(this.task._end, -1, 'second'),
-            'MMM D'
+            'MMM D',
+            this.gantt.options.language
         );
         const subtitle = start_date + ' - ' + end_date;
 
@@ -596,7 +639,7 @@ class Bar {
             target_element: this.$bar,
             title: this.task.name,
             subtitle: subtitle,
-            task: this.task
+            task: this.task,
         });
     }
 
@@ -1275,11 +1318,12 @@ class Gantt {
         const lines_layer = createSVG('g', { append_to: this.layers.grid });
 
         const row_width = this.dates.length * this.options.column_width;
-        const row_height = this.options.bar_height + this.options.padding;
 
         let row_y = this.options.header_height + this.options.padding / 2;
 
         for (let task of this.tasks) {
+            let row_height = task.height + this.options.padding;
+
             createSVG('rect', {
                 x: 0,
                 y: row_y,
@@ -1298,7 +1342,7 @@ class Gantt {
                 append_to: lines_layer
             });
 
-            row_y += this.options.bar_height + this.options.padding;
+            row_y += row_height;
         }
     }
 
